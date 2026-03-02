@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Start Free Trial — FillDay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0f1f3d;
+      --blue: #2563eb;
+      --blue2: #1d4ed8;
+      --sky: #38bdf8;
+      --cream: #fafaf7;
+      --text: #1a1a2e;
+      --mid: #4a5568;
+      --green: #10b981;
+    }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--navy);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      top: -200px; right: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(37,99,235,0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    body::after {
+      content: '';
+      position: absolute;
+      bottom: -100px; left: -100px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(56,189,248,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 28px;
+      color: white;
+      margin-bottom: 40px;
+      text-decoration: none;
+      position: relative;
+      z-index: 1;
+    }
+    .logo span { color: var(--sky); }
+
+    .card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 48px 44px;
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      z-index: 1;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--blue), var(--sky));
+      border-radius: 20px 20px 0 0;
+    }
+
+    .trial-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16,185,129,0.15);
+      border: 1px solid rgba(16,185,129,0.3);
+      color: #34d399;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    .trial-badge::before { content: '●'; font-size: 8px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 28px;
+      color: white;
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+    .subtitle a { color: var(--sky); text-decoration: none; font-weight: 500; }
+    .subtitle a:hover { text-decoration: underline; }
+
+    .field { margin-bottom: 16px; }
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 6px;
+    }
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.08);
+      border: 1.5px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      color: white;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input::placeholder { color: rgba(255,255,255,0.3); }
+    input:focus { border-color: rgba(37,99,235,0.7); background: rgba(255,255,255,0.1); }
+
+    .error {
+      background: rgba(239,68,68,0.15);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: #fca5a5;
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .error.show { display: block; }
+
+    .btn {
+      width: 100%;
+      background: var(--blue);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 20px rgba(37,99,235,0.4);
+      margin-top: 4px;
+    }
+    .btn:hover:not(:disabled) { background: var(--blue2); transform: translateY(-1px); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .divider {
+      text-align: center;
+      color: rgba(255,255,255,0.2);
+      font-size: 12px;
+      margin: 20px 0;
+      position: relative;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: calc(50% - 20px);
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+    }
+    .divider::before { left: 0; }
+    .divider::after { right: 0; }
+
+    .features {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+    }
+    .feature::before {
+      content: '✓';
+      width: 18px;
+      height: 18px;
+      background: rgba(16,185,129,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #34d399;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* Success state */
+    .success-screen {
+      display: none;
+      text-align: center;
+    }
+    .success-screen.show { display: block; }
+    .success-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    .success-screen h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 24px;
+      color: white;
+      margin-bottom: 12px;
+    }
+    .success-screen p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .install-steps {
+      text-align: left;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .install-step {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.5;
+    }
+    .install-step:last-child { margin-bottom: 0; }
+    .step-num {
+      width: 22px;
+      height: 22px;
+      background: var(--blue);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .form-screen { display: block; }
+    .form-screen.hide { display: none; }
+  </style>
+</head>
+<body>
+
+  <a href="/" class="logo">Fill<span>Day</span></a>
+
+  <div class="card">
+
+    <!-- Form -->
+    <div class="form-screen" id="form-screen">
+      <div class="trial-badge">7-day free trial</div>
+      <h1>Create your account</h1>
+      <p class="subtitle">Already have an account? <a href="/login.html">Sign in →</a></p>
+
+      <div class="error" id="error-msg"></div>
+
+      <div class="field">
+        <label>Email address</label>
+        <input type="email" id="email" placeholder="you@school.edu" autocomplete="email" />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="At least 6 characters" autocomplete="new-password" />
+      </div>
+      <div class="field">
+        <label>Confirm password</label>
+        <input type="password" id="confirm" placeholder="Same password again" autocomplete="new-password" />
+      </div>
+
+      <button class="btn" id="signup-btn">Start Free Trial →</button>
+
+      <div class="features">
+        <div class="feature">7 days free — no credit card needed</div>
+        <div class="feature">Then just $1/month</div>
+        <div class="feature">Cancel anytime</div>
+      </div>
+    </div>
+
+    <!-- Success -->
+    <div class="success-screen" id="success-screen">
+      <div class="success-icon">🎉</div>
+      <h2>You're in!</h2>
+      <p>Your 7-day free trial has started. Now install the extension and sign in.</p>
+      <div class="install-steps">
+        <div class="install-step">
+          <div class="step-num">1</div>
+          <div>Install the <strong style="color:white">FillDay Chrome Extension</strong> from the Chrome Web Store</div>
+        </div>
+        <div class="install-step">
+          <div class="step-num">2</div>
+          <div>Open any Canvas assignment and click the <strong style="color:white">📅 badge</strong> in the bottom right</div>
+        </div>
+        <div class="install-step">
+          <div class="step-num">3</div>
+          <div>Sign in with your email and password</div>
+        </div>
+        <div class="install-step">
+          <div class="step-num">4</div>
+          <div>Set up your bell schedule once — then click <strong style="color:white">Fill Dates</strong> on every assignment</div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:rgba(255,255,255,0.35)">Signed up as <span id="success-email"></span></p>
+    </div>
+
+  </div>
+
+  <script>
+    const API = 'https://fillday-backend.onrender.com';
+
+    document.getElementById('signup-btn').addEventListener('click', signup);
+    document.getElementById('confirm').addEventListener('keydown', e => { if (e.key === 'Enter') signup(); });
+
+    async function signup() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const confirm = document.getElementById('confirm').value;
+      const errEl = document.getElementById('error-msg');
+      const btn = document.getElementById('signup-btn');
+
+      errEl.classList.remove('show');
+
+      if (!email) return showError('Please enter your email address.');
+      if (!password) return showError('Please enter a password.');
+      if (password.length < 6) return showError('Password must be at least 6 characters.');
+      if (password !== confirm) return showError('Passwords do not match.');
+
+      btn.textContent = 'Creating account...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(API + '/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) { showError(data.error || 'Signup failed. Please try again.'); btn.textContent = 'Start Free Trial →'; btn.disabled = false; return; }
+
+        // Save token
+        localStorage.setItem('fillday_token', data.token);
+        localStorage.setItem('fillday_email', email);
+
+        // Show success
+        document.getElementById('form-screen').classList.add('hide');
+        document.getElementById('success-screen').classList.add('show');
+        document.getElementById('success-email').textContent = email;
+
+      } catch (e) {
+        showError('Connection error. Please try again.');
+        btn.textContent = 'Start Free Trial →';
+        btn.disabled = false;
+      }
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('error-msg');
+      el.textContent = msg;
+      el.classList.add('show');
+    }
+  </script>
+</body>
+</html>

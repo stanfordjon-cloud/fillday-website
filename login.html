@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — FillDay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0f1f3d;
+      --blue: #2563eb;
+      --blue2: #1d4ed8;
+      --sky: #38bdf8;
+    }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--navy);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      top: -200px; right: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(37,99,235,0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 28px;
+      color: white;
+      margin-bottom: 40px;
+      text-decoration: none;
+      position: relative;
+      z-index: 1;
+    }
+    .logo span { color: var(--sky); }
+    .card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 48px 44px;
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      z-index: 1;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--blue), var(--sky));
+      border-radius: 20px 20px 0 0;
+    }
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 28px;
+      color: white;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 32px;
+    }
+    .subtitle a { color: var(--sky); text-decoration: none; font-weight: 500; }
+    .field { margin-bottom: 16px; }
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 6px;
+    }
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.08);
+      border: 1.5px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      color: white;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input::placeholder { color: rgba(255,255,255,0.3); }
+    input:focus { border-color: rgba(37,99,235,0.7); background: rgba(255,255,255,0.1); }
+    .error {
+      background: rgba(239,68,68,0.15);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: #fca5a5;
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .error.show { display: block; }
+    .btn {
+      width: 100%;
+      background: var(--blue);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 20px rgba(37,99,235,0.4);
+      margin-top: 4px;
+    }
+    .btn:hover:not(:disabled) { background: var(--blue2); transform: translateY(-1px); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  </style>
+</head>
+<body>
+  <a href="/" class="logo">Fill<span>Day</span></a>
+  <div class="card">
+    <h1>Welcome back</h1>
+    <p class="subtitle">No account yet? <a href="/signup.html">Start free trial →</a></p>
+    <div class="error" id="error-msg"></div>
+    <div class="field">
+      <label>Email address</label>
+      <input type="email" id="email" placeholder="you@school.edu" autocomplete="email" />
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="Your password" autocomplete="current-password" />
+    </div>
+    <button class="btn" id="login-btn">Sign In →</button>
+  </div>
+
+  <script>
+    const API = 'https://fillday-backend.onrender.com';
+    document.getElementById('login-btn').addEventListener('click', login);
+    document.getElementById('password').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+
+    async function login() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const errEl = document.getElementById('error-msg');
+      const btn = document.getElementById('login-btn');
+      errEl.classList.remove('show');
+      if (!email || !password) return showError('Please enter your email and password.');
+      btn.textContent = 'Signing in...'; btn.disabled = true;
+      try {
+        const res = await fetch(API + '/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) { showError(data.error || 'Login failed.'); btn.textContent = 'Sign In →'; btn.disabled = false; return; }
+        localStorage.setItem('fillday_token', data.token);
+        window.location.href = '/';
+      } catch (e) {
+        showError('Connection error. Please try again.');
+        btn.textContent = 'Sign In →'; btn.disabled = false;
+      }
+    }
+    function showError(msg) {
+      const el = document.getElementById('error-msg');
+      el.textContent = msg; el.classList.add('show');
+    }
+  </script>
+</body>
+</html>
